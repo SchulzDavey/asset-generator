@@ -2,7 +2,9 @@ import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
-const openai = new OpenAI();
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export async function POST(req: Request) {
   try {
@@ -12,13 +14,6 @@ export async function POST(req: Request) {
 
     if (!userId) {
       return NextResponse.json({ message: "No user found" }, { status: 400 });
-    }
-
-    if (process.env.OPENAI_API_KEY) {
-      return NextResponse.json(
-        { message: "Key couldn't be found" },
-        { status: 500 }
-      );
     }
 
     if (!messages) {
@@ -33,9 +28,7 @@ export async function POST(req: Request) {
       messages,
     });
 
-    const result = response.choices[0].message;
-
-    return NextResponse.json({ result }, { status: 200 });
+    return NextResponse.json(response.choices[0].message);
   } catch (error) {
     console.log("CONVERSATION_ERROR", error);
     return NextResponse.json({ message: "Internal error" }, { status: 500 });
