@@ -1,6 +1,21 @@
 "use client";
 
 import { useProModal } from "@/hooks/use-pro-modal";
+import { cn } from "@/lib/utils";
+import {
+  ChatBubbleIcon,
+  CheckIcon,
+  CodeIcon,
+  ImageIcon,
+  SpeakerLoudIcon,
+  StarIcon,
+  VideoIcon,
+} from "@radix-ui/react-icons";
+import axios from "axios";
+import { useState } from "react";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
 import {
   Dialog,
   DialogContent,
@@ -9,19 +24,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import { Badge } from "./ui/badge";
-import {
-  ChatBubbleIcon,
-  ImageIcon,
-  VideoIcon,
-  SpeakerLoudIcon,
-  CodeIcon,
-  CheckIcon,
-  StarIcon,
-} from "@radix-ui/react-icons";
-import { Card } from "./ui/card";
-import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
 
 const tools = [
   {
@@ -63,6 +65,19 @@ const tools = [
 
 const ProModal = () => {
   const proModal = useProModal();
+  const [loading, setLoading] = useState(false);
+
+  const onSubscribe = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/api/stripe");
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.log(error, "STRIP_ERROR");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Dialog open={proModal.isOpen} onOpenChange={proModal.onClose}>
@@ -94,7 +109,13 @@ const ProModal = () => {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button size="lg" variant="premium" className="w-full">
+          <Button
+            disabled={loading}
+            onClick={onSubscribe}
+            size="lg"
+            variant="premium"
+            className="w-full"
+          >
             Upgrade
             <StarIcon className="w-4 h-4 ml-2 fill-white" />
           </Button>

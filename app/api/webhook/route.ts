@@ -1,8 +1,9 @@
 import Stripe from "stripe";
 import { headers } from "next/headers";
-import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+
 import prismadb from "@/lib/prismadb";
+import { stripe } from "@/lib/stripe";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -16,9 +17,13 @@ export async function POST(req: Request) {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
-  } catch (error) {
-    console.log("WEBHOOK", error);
-    return NextResponse.json({ message: "Internal error" }, { status: 500 });
+
+    console.log(event);
+  } catch (error: any) {
+    return NextResponse.json(
+      { message: `Webhook Error: ${error.message}` },
+      { status: 400 }
+    );
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
@@ -55,7 +60,7 @@ export async function POST(req: Request) {
 
     await prismadb.userSubscription.update({
       where: {
-        stripeCustomerId: subscription.id,
+        stripeSubscriptionId: subscription.id,
       },
       data: {
         stripePriceId: subscription.items.data[0].price.id,
