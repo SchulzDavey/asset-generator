@@ -1,6 +1,6 @@
 "use client";
 
-import { CrispChat } from "./crisp-chat";
+import { CrispChat } from "./Crisp-Chat";
 
 const CrispProvider = () => {
   return <CrispChat />;

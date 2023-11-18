@@ -4,7 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { CrispChat } from "@/components/crisp-chat";
+import { CrispChat } from "@/components/Crisp-Chat";
 
 const inter = Inter({ subsets: ["latin"] });
 
