@@ -8,6 +8,7 @@ import UserAvatar from "@/components/User-Avatar";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useProModal } from "@/hooks/use-pro-modal";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChatBubbleIcon } from "@radix-ui/react-icons";
@@ -16,9 +17,9 @@ import { useRouter } from "next/navigation";
 import { ChatCompletionMessage } from "openai/resources/chat/index.mjs";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { z } from "zod";
 import { formSchema } from "./Constants";
-import { useProModal } from "@/hooks/use-pro-modal";
 
 const ConversationPage = () => {
   const proModal = useProModal();
@@ -51,9 +52,9 @@ const ConversationPage = () => {
     } catch (error: any) {
       if (error?.response?.status === 403) {
         proModal.onOpen();
+      } else {
+        toast.error("Something went wrong");
       }
-
-      console.log(error);
     } finally {
       router.refresh();
     }

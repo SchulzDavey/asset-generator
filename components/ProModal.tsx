@@ -24,6 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
+import toast from "react-hot-toast";
 
 const tools = [
   {
@@ -73,7 +74,7 @@ const ProModal = () => {
       const response = await axios.get("/api/stripe");
       window.location.href = response.data.url;
     } catch (error) {
-      console.log(error, "STRIP_ERROR");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
